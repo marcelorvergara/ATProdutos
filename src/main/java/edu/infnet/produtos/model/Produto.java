@@ -37,6 +37,13 @@ public class Produto {
         this.imagem = imagem;
     }
 
+    public Produto(Long codigoProd, String nome, String descricao, String imagem) {
+        this.codigoProd = codigoProd;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.imagem = imagem;
+    }
+
     /**
      * @return the codigoProd
      */

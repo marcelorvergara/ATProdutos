@@ -20,4 +20,10 @@ public interface ProdutoService {
 
     public List<Produto> findAll();
 
+    public Produto findNomeByCodigoProd(Long id);
+
+    public Produto findByCodigoProd(long id);
+
+    public Produto findById(String codigoProd);
+
 }

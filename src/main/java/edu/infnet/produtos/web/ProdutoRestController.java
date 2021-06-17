@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,6 +31,15 @@ public class ProdutoRestController {
         //vai no banco pegar a lista de produtos
         return produtoService.findAll();
 
+    }
+
+    //retornar o nome do produto pelo id
+    @GetMapping("/nomeProd/{id}")
+    public String getNomeProd(@PathVariable String id) {
+
+        Produto produto = produtoService.findNomeByCodigoProd(Long.parseLong(id));
+
+        return produto.getNome();
     }
 
 }

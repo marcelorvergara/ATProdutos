@@ -14,4 +14,8 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ProdutoRepository extends CrudRepository<Produto, Long> {
 
+    public Produto findNomeByCodigoProd(Long id);
+
+    public Produto findByCodigoProd(long id);
+
 }

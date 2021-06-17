@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +50,11 @@ public class ProdutoController {
 
         model.addAttribute("prodForm", prodForm);
 
+        //pegar a lista de produtos no banco
+        List<Produto> produtoList = produtoService.findAll();
+
+        model.addAttribute("produtoList", produtoList);
+
         return "produto";
     }
 
@@ -76,6 +82,61 @@ public class ProdutoController {
         Produto produto = new Produto(nome, descricao, fileUrl.toString());
 
         produtoService.save(produto);
+
+        return "redirect:/produto";
+    }
+
+    //alterar produto
+    @GetMapping("/editar/{id}")
+    public String alterar(@PathVariable("id") String id, Model model) {
+
+        Produto produto = produtoService.findByCodigoProd(Long.parseLong(id));
+
+        System.out.println("Produto: " + produto.getNome());
+
+        model.addAttribute("prodForm", produto);
+
+        //pegar a lista de produtos no banco
+        List<Produto> produtoList = produtoService.findAll();
+
+        model.addAttribute("produtoList", produtoList);
+
+        return "produto_alterar";
+    }
+
+    //gravar alteração
+    @PostMapping("/updateProd")
+    public String gravarAlteracao(
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("nome") String nome,
+            @RequestParam("descricao") String descricao,
+            @RequestParam("codigoProd") String codigoProd,
+            @RequestParam("imagem") String imagem,
+            Model model) throws IOException {
+
+        //deletar a imagem antiga
+        System.out.println("File MP: " + multipartFile.getOriginalFilename());
+
+        String urlImagem = imagem;
+
+        if (!"".equals(multipartFile.getOriginalFilename())) {
+
+            File file = File.createTempFile("tmp", "tmp");
+
+            multipartFile.transferTo(file);
+
+            awsS3Service.upload(file, multipartFile.getOriginalFilename(), bucket_name);
+
+            StringBuilder fileUrl = new StringBuilder();
+
+            fileUrl.append("https://dr4s3bucket.s3.sa-east-1.amazonaws.com/").append(multipartFile.getOriginalFilename());
+
+            urlImagem = fileUrl.toString();
+        }
+
+        Produto prod = new Produto(Long.parseLong(codigoProd), nome, descricao, urlImagem);
+
+        produtoService.save(prod);
 
         return "redirect:/produto";
     }

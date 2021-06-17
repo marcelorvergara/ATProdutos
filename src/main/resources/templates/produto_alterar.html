@@ -11,8 +11,9 @@
             <h4>Cadastro de Produtos</h4>
             <hr>
             <div class="container mt-4" style="width: 390px">
-                <form method="POST" class="form-signin" th:object="${prodForm}" th:action="@{/cadProd}" enctype="multipart/form-data">
+                <form method="POST" class="form-signin" th:object="${prodForm}" th:action="@{/updateProd}" enctype="multipart/form-data">
                     
+                    <input type="text" th:value="${codigoProd}" th:field="*{codigoProd}" hidden>
                     <div class="form-group">
                         <lable for="nome">Nome do produto: </lable>
                         <input type="text" th:field="*{nome}" class="form-control" placeholder="Nome do produto"
@@ -26,6 +27,7 @@
                            autofocus="true" id="descricao">
                     </div>
                      <!--foto-->    
+                     <input type="text" th:value="${imagem}" th:field="*{imagem}" hidden>
                     <div class="row no-gutters mt-4">
                         <div class="col">
                             <label>Selecionar imagem do produto:</label><br>
@@ -37,7 +39,7 @@
                         </div>                      
                     </div>
                     <div class="mt-5 d-grid gap-2">
-                        <button type="submit" name="action" value="upload" class="btn btn-primary">Enviar</button>
+                        <button type="submit" name="action" value="upload" class="btn btn-primary">Alterar</button>
                     </div>
                 </form> 
         </div>
