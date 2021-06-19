@@ -46,4 +46,9 @@ public class ProdutoServiceImpl implements ProdutoService {
         return produtoRepository.findByCodigoProd(Long.parseLong(codigoProd));
     }
 
+    @Override
+    public void deleteByCodigoProd(String id) {
+        produtoRepository.deleteById(Long.parseLong(id));
+    }
+
 }

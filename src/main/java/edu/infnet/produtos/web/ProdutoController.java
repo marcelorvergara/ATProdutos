@@ -114,13 +114,14 @@ public class ProdutoController {
             @RequestParam("imagem") String imagem,
             Model model) throws IOException {
 
-        //deletar a imagem antiga
         System.out.println("File MP: " + multipartFile.getOriginalFilename());
 
         String urlImagem = imagem;
 
+        //testa se o usuário trocou a imagem no html. Envia a nova imagem e deleta a antiga
         if (!"".equals(multipartFile.getOriginalFilename())) {
 
+            //Enviando a nova imagem
             File file = File.createTempFile("tmp", "tmp");
 
             multipartFile.transferTo(file);
@@ -132,11 +133,34 @@ public class ProdutoController {
             fileUrl.append("https://dr4s3bucket.s3.sa-east-1.amazonaws.com/").append(multipartFile.getOriginalFilename());
 
             urlImagem = fileUrl.toString();
+
+            //Deletando a imagem antiga. "imagem" é a url do arquvivo guardada no db.
+            String fileName = imagem.split(".com/")[1];
+
+            awsS3Service.delete(bucket_name, fileName);
         }
 
         Produto prod = new Produto(Long.parseLong(codigoProd), nome, descricao, urlImagem);
 
         produtoService.save(prod);
+
+        return "redirect:/produto";
+    }
+
+    //deletar produto
+    @GetMapping("/deletar/{id}")
+    public String deletar(@PathVariable("id") String id, Model model) {
+
+        //pegar a imagem do produto a partir do id --> deletar no S3
+        Produto produto = produtoService.findById(id);
+
+        //Deletando a imagem antiga. "imagem" é a url do arquvivo guardada no db.
+        String fileName = produto.getImagem().split(".com/")[1];
+
+        awsS3Service.delete(bucket_name, fileName);
+
+        //deletando o produto da base de dados
+        produtoService.deleteByCodigoProd(id);
 
         return "redirect:/produto";
     }

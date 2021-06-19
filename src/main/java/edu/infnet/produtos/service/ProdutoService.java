@@ -26,4 +26,6 @@ public interface ProdutoService {
 
     public Produto findById(String codigoProd);
 
+    public void deleteByCodigoProd(String id);
+
 }
