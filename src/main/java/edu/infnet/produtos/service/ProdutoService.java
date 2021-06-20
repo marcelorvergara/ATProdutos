@@ -22,7 +22,7 @@ public interface ProdutoService {
 
     public Produto findNomeByCodigoProd(Long id);
 
-    public Produto findByCodigoProd(long id);
+    public Produto findByCodigoProd(Long id);
 
     public Produto findById(String codigoProd);
 

@@ -37,7 +37,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public Produto findByCodigoProd(long id) {
+    public Produto findByCodigoProd(Long id) {
         return produtoRepository.findByCodigoProd(id);
     }
 

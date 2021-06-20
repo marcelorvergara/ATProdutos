@@ -34,8 +34,11 @@ public class AwsS3Service {
             amazonS3Client.putObject(new PutObjectRequest(bucketName, filename, file).withCannedAcl(CannedAccessControlList.PublicRead));
 
             return true;
+
         } catch (SdkClientException e) {
+
             System.out.println("Exception upload: " + e.getMessage());
+
             return false;
         }
     }
@@ -49,8 +52,11 @@ public class AwsS3Service {
             amazonS3Client.deleteObjects(delObjReq);
 
             return true;
+
         } catch (SdkClientException e) {
+
             System.out.println("Exception delete: " + e.getMessage());
+
             return false;
         }
     }
