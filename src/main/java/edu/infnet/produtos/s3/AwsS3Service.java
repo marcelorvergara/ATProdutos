@@ -28,6 +28,7 @@ public class AwsS3Service {
     @Autowired
     private AmazonS3 amazonS3Client;
 
+    //upload de imagem do produto
     public boolean upload(File file, String filename, String bucketName) {
 
         try {
@@ -43,7 +44,7 @@ public class AwsS3Service {
         }
     }
 
-    //delete
+    //delete da imagem do produto
     public boolean delete(String bucketName, String filename) {
 
         try {

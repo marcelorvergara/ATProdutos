@@ -43,6 +43,7 @@ public class ProdutoController {
     @Value("${aws.bucketName}")
     private String bucket_name;
 
+    //página principal do produto
     @GetMapping({"/produto", "/produto.html"})
     public String produto(Model model) {
 
@@ -58,20 +59,16 @@ public class ProdutoController {
         return "produto";
     }
 
-    //enviar foto
+    //enviar foto do produto
     @PostMapping(value = "/cadProd", params = "action=upload")
     public String upload(@RequestParam("file") MultipartFile multipartFile,
             @RequestParam("nome") String nome,
             @RequestParam("descricao") String descricao,
             Model model) throws IOException {
 
-        log.info("nome arquivo: " + multipartFile.getOriginalFilename());
-
         //já subir o arquivo para o s3 e usar a url do bucket para guardar na base de dados
         File file = File.createTempFile("tmp", "tmp");
         multipartFile.transferTo(file);
-
-        log.info("Foto file: " + multipartFile.getOriginalFilename());
 
         awsS3Service.upload(file, multipartFile.getOriginalFilename(), bucket_name);
 
@@ -86,13 +83,13 @@ public class ProdutoController {
         return "redirect:/produto";
     }
 
-    //alterar produto
+    //alterar produto - busca o produto e apresenta as infos que serão alteradas
+    //em uma nova página
     @GetMapping("/editar/{id}")
     public String alterar(@PathVariable("id") String id, Model model) {
 
+        //buscar no banco de dados o produto pelo id que vem pela URL
         Produto produto = produtoService.findByCodigoProd(Long.parseLong(id));
-
-        System.out.println("Produto: " + produto.getNome());
 
         model.addAttribute("prodForm", produto);
 
@@ -104,7 +101,7 @@ public class ProdutoController {
         return "produto_alterar";
     }
 
-    //gravar alteração
+    //gravar alteração do produto no banco de dados
     @PostMapping("/updateProd")
     public String gravarAlteracao(
             @RequestParam("file") MultipartFile multipartFile,
@@ -113,8 +110,6 @@ public class ProdutoController {
             @RequestParam("codigoProd") String codigoProd,
             @RequestParam("imagem") String imagem,
             Model model) throws IOException {
-
-        System.out.println("File MP: " + multipartFile.getOriginalFilename());
 
         String urlImagem = imagem;
 
@@ -128,6 +123,7 @@ public class ProdutoController {
 
             awsS3Service.upload(file, multipartFile.getOriginalFilename(), bucket_name);
 
+            //criando a nova url para alterar no banco de dados
             StringBuilder fileUrl = new StringBuilder();
 
             fileUrl.append("https://dr4s3bucket.s3.sa-east-1.amazonaws.com/").append(multipartFile.getOriginalFilename());
