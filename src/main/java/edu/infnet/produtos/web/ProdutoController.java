@@ -47,6 +47,7 @@ public class ProdutoController {
     @GetMapping({"/produto", "/produto.html"})
     public String produto(Model model) {
 
+        //objeto em branco para cadastro de produto
         Produto prodForm = new Produto();
 
         model.addAttribute("prodForm", prodForm);
